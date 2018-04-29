@@ -16,11 +16,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="App Name"
-        android:id="@+id/appLabel"
+        android:id="@+id/label"
         android:textSize="12sp"
         android:textColor="@android:color/white"
         android:shadowColor="@android:color/black"
-        android:shadowRadius="10sp"
+        android:shadowRadius="10"
         android:textAlignment="center"/>
 
 </LinearLayout>
