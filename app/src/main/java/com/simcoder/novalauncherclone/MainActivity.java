@@ -5,6 +5,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.GestureDetector;
@@ -18,14 +19,31 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     boolean isBottom = true;
+    ViewPager mViewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        initializeHome();
         initializeDrawer();
     }
 
+
+    private void initializeHome() {
+        ArrayList<PagerObject> pagerAppList = new ArrayList<>();
+        ArrayList<AppObject> appList = new ArrayList<>();
+        for (int i = 0; i< 20 ;i++)
+            appList.add(new AppObject("", "", getResources().getDrawable(R.drawable.ic_launcher_foreground)));
+
+        pagerAppList.add(new PagerObject(appList));
+        pagerAppList.add(new PagerObject(appList));
+        pagerAppList.add(new PagerObject(appList));
+
+        mViewPager = findViewById(R.id.viewPager);
+        mViewPager.setAdapter(new ViewPagerAdapter(this, pagerAppList));
+    }
 
 
     List<AppObject> installedAppList = new ArrayList<>();
@@ -35,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         final GridView mDrawerGridView = findViewById(R.id.drawerGrid);
         final BottomSheetBehavior mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheet);
         mBottomSheetBehavior.setHideable(false);
-        mBottomSheetBehavior.setPeekHeight(300);
+        mBottomSheetBehavior.setPeekHeight(100);
 
         installedAppList = getInstalledAppList();
 
