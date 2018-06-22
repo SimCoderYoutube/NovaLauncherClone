@@ -15,10 +15,12 @@ import java.util.List;
 public class AppAdapter extends BaseAdapter {
     Context context;
     List<AppObject> appList;
+    int cellHeight;
 
-    public AppAdapter(Context context, List<AppObject> appList){
+    public AppAdapter(Context context, List<AppObject> appList, int cellHeight){
         this.context = context;
         this.appList = appList;
+        this.cellHeight = cellHeight;
     }
     @Override
     public int getCount() {
@@ -48,6 +50,9 @@ public class AppAdapter extends BaseAdapter {
         LinearLayout mLayout = v.findViewById(R.id.layout);
         ImageView mImage = v.findViewById(R.id.image);
         TextView mLabel = v.findViewById(R.id.label);
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, cellHeight);
+        mLayout.setLayoutParams(lp);
 
         mImage.setImageDrawable(appList.get(position).getImage());
         mLabel.setText(appList.get(position).getName());
