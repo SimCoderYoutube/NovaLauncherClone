@@ -60,9 +60,14 @@ public class AppAdapter extends BaseAdapter {
         mLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent launchAppIntent = context.getPackageManager().getLaunchIntentForPackage(appList.get(position).getPackageName());
-                if (launchAppIntent != null)
-                    context.startActivity(launchAppIntent);
+                ((MainActivity) context).itemPress(appList.get(position));
+            }
+        });
+        mLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ((MainActivity) context).itemLongPress(appList.get(position));
+                return false;
             }
         });
         return v;

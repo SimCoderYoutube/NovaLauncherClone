@@ -37,29 +37,38 @@ public class MainActivity extends AppCompatActivity {
         initializeDrawer();
     }
 
-
+    ViewPagerAdapter mViewPagerAdapter;
     private void initializeHome() {
         ArrayList<PagerObject> pagerAppList = new ArrayList<>();
-        ArrayList<AppObject> appList = new ArrayList<>();
-        for (int i = 0; i< 20 ;i++)
-            appList.add(new AppObject("", "", getResources().getDrawable(R.drawable.ic_launcher_foreground)));
 
-        pagerAppList.add(new PagerObject(appList));
-        pagerAppList.add(new PagerObject(appList));
-        pagerAppList.add(new PagerObject(appList));
+        ArrayList<AppObject> appList1 = new ArrayList<>();
+        ArrayList<AppObject> appList2 = new ArrayList<>();
+        ArrayList<AppObject> appList3 = new ArrayList<>();
+        for (int i = 0; i< 20 ;i++)
+            appList1.add(new AppObject("", "", getResources().getDrawable(R.drawable.ic_launcher_foreground)));
+        for (int i = 0; i< 20 ;i++)
+            appList2.add(new AppObject("", "", getResources().getDrawable(R.drawable.ic_launcher_foreground)));
+        for (int i = 0; i< 20 ;i++)
+            appList3.add(new AppObject("", "", getResources().getDrawable(R.drawable.ic_launcher_foreground)));
+
+        pagerAppList.add(new PagerObject(appList1));
+        pagerAppList.add(new PagerObject(appList2));
+        pagerAppList.add(new PagerObject(appList3));
 
         cellHeight = (getDisplayContentHeight() - DRAWER_PEEK_HEIGHT) / NUMBER_OF_ROWS ;
 
         mViewPager = findViewById(R.id.viewPager);
-        mViewPager.setAdapter(new ViewPagerAdapter(this, pagerAppList, cellHeight));
+        mViewPagerAdapter = new ViewPagerAdapter(this, pagerAppList, cellHeight);
+        mViewPager.setAdapter(mViewPagerAdapter);
     }
 
     List<AppObject> installedAppList = new ArrayList<>();
-
+    GridView mDrawerGridView;
+    BottomSheetBehavior mBottomSheetBehavior;
     private void initializeDrawer() {
         View mBottomSheet =findViewById(R.id.bottomSheet);
-        final GridView mDrawerGridView = findViewById(R.id.drawerGrid);
-        final BottomSheetBehavior mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheet);
+        mDrawerGridView = findViewById(R.id.drawerGrid);
+        mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheet);
         mBottomSheetBehavior.setHideable(false);
         mBottomSheetBehavior.setPeekHeight(DRAWER_PEEK_HEIGHT);
 
@@ -70,7 +79,10 @@ public class MainActivity extends AppCompatActivity {
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if(newState == BottomSheetBehavior.STATE_HIDDEN && mDrawerGridView.getChildAt(0).getY() != 0)
+                if(mAppDrag != null)
+                    return;
+
+                if(newState == BottomSheetBehavior.STATE_COLLAPSED && mDrawerGridView.getChildAt(0).getY() != 0)
                     mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 if(newState == BottomSheetBehavior.STATE_DRAGGING && mDrawerGridView.getChildAt(0).getY() != 0)
                     mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -82,6 +94,40 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+
+
+    AppObject mAppDrag = null;
+    public void itemPress(AppObject app){
+        if(mAppDrag != null){
+            app.setPackageName(mAppDrag.getPackageName());
+            app.setName(mAppDrag.getName());
+            app.setImage(mAppDrag.getImage());
+            mAppDrag = null;
+            mViewPagerAdapter.notifyGridChanged();
+            return;
+        }else{
+            Intent launchAppIntent = getApplicationContext().getPackageManager().getLaunchIntentForPackage(app.getPackageName());
+            if (launchAppIntent != null)
+                getApplicationContext().startActivity(launchAppIntent);
+        }
+    }
+
+    public void itemLongPress(AppObject app){
+        collapseDrawer();
+        mAppDrag = app;
+    }
+
+    private void collapseDrawer() {
+        mDrawerGridView.setY(0);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+
+
+
+
+
 
     private List<AppObject> getInstalledAppList() {
         List<AppObject> list = new ArrayList<>();
