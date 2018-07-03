@@ -45,11 +45,11 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<AppObject> appList2 = new ArrayList<>();
         ArrayList<AppObject> appList3 = new ArrayList<>();
         for (int i = 0; i< 20 ;i++)
-            appList1.add(new AppObject("", "", getResources().getDrawable(R.drawable.ic_launcher_foreground)));
+            appList1.add(new AppObject("", "", getResources().getDrawable(R.drawable.ic_launcher_foreground), false));
         for (int i = 0; i< 20 ;i++)
-            appList2.add(new AppObject("", "", getResources().getDrawable(R.drawable.ic_launcher_foreground)));
+            appList2.add(new AppObject("", "", getResources().getDrawable(R.drawable.ic_launcher_foreground), false));
         for (int i = 0; i< 20 ;i++)
-            appList3.add(new AppObject("", "", getResources().getDrawable(R.drawable.ic_launcher_foreground)));
+            appList3.add(new AppObject("", "", getResources().getDrawable(R.drawable.ic_launcher_foreground), false));
 
         pagerAppList.add(new PagerObject(appList1));
         pagerAppList.add(new PagerObject(appList2));
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         installedAppList = getInstalledAppList();
 
-        mDrawerGridView.setAdapter(new AppAdapter(getApplicationContext(), installedAppList, cellHeight));
+        mDrawerGridView.setAdapter(new AppAdapter(this, installedAppList, cellHeight));
 
         mBottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -97,12 +97,25 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    AppObject mAppDrag = null;
+    public AppObject mAppDrag = null;
     public void itemPress(AppObject app){
-        if(mAppDrag != null){
+        if(mAppDrag != null && !app.getName().equals("")){
+            Toast.makeText(this,"Cell Already Occupied", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(mAppDrag != null && !app.getIsAppInDrawer()){
+
             app.setPackageName(mAppDrag.getPackageName());
             app.setName(mAppDrag.getName());
             app.setImage(mAppDrag.getImage());
+            app.setIsAppInDrawer(false);
+
+            if(!mAppDrag.getIsAppInDrawer()){
+                mAppDrag.setPackageName("");
+                mAppDrag.setName("");
+                mAppDrag.setImage(getResources().getDrawable(R.drawable.ic_launcher_foreground));
+                mAppDrag.setIsAppInDrawer(false);
+            }
             mAppDrag = null;
             mViewPagerAdapter.notifyGridChanged();
             return;
@@ -141,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
             String appPackageName = untreatedApp.activityInfo.packageName;
             Drawable appImage = untreatedApp.activityInfo.loadIcon(getPackageManager());
 
-            AppObject app = new AppObject(appPackageName, appName, appImage);
+            AppObject app = new AppObject(appPackageName, appName, appImage, true);
             if (!list.contains(app))
                 list.add(app);
         }

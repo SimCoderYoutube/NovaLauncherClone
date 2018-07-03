@@ -67,7 +67,7 @@ public class AppAdapter extends BaseAdapter {
             @Override
             public boolean onLongClick(View v) {
                 ((MainActivity) context).itemLongPress(appList.get(position));
-                return false;
+                return true;
             }
         });
         return v;
