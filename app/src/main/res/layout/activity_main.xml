@@ -7,16 +7,22 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     tools:context=".MainActivity">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/ic_launcher_background"
+            android:scaleType="centerCrop"
+            android:id="@+id/homeScreenImage"/>
         <android.support.v4.view.ViewPager
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/viewPager">
         </android.support.v4.view.ViewPager>
-    </LinearLayout>
+    </FrameLayout>
 
 
     <FrameLayout
@@ -26,14 +32,31 @@
         style="@style/Widget.Design.BottomSheet.Modal"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
-        <GridView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/drawerGrid"
-            android:numColumns="4"
-            android:stretchMode="columnWidth"
-            android:layout_gravity="center">
-        </GridView>
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/topDrawerLayout">
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/ic_menu_edit"
+                    android:id="@+id/settings"/>
+            </LinearLayout>
+
+            <GridView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/drawerGrid"
+                android:numColumns="4"
+                android:stretchMode="columnWidth"
+                android:layout_gravity="center"/>
+        </LinearLayout>
 
     </FrameLayout>
 
